@@ -1,0 +1,60 @@
+
+package cc4;
+import java.util.Scanner;
+
+public class CC4 {
+
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+       
+        System.out.print("Enter Dimension : ");
+        int dim = sc.nextInt();
+        double temp = 1;
+        int ub [] = new int[dim];
+        for (int i = 0; i <ub.length ; i ++){
+            System.out.print("Enter UB" + (i + 1)+ ": ");
+            ub[i] = sc.nextInt();
+            temp = temp * ub[i];
+        }
+        
+        
+        System.out.print("Enter Starting address: ");
+        int add = sc.nextInt();
+         
+        System.out.print("Enter esize: ");
+        int esize = sc.nextInt();
+        
+        System.out.println("Total number of Elements in the Array: "  + temp);
+        System.out.println("");
+        System.out.println("*** SEARCH FOR MEMORY ADDRESS OF ith ELEMENT ***");
+        System.out.println("");
+       
+        int index[] = new int [dim];
+        for (int j= 0; j< index.length; j++){
+            System.out.print("Input search index at dimension " + (j + 1) + ": ");
+            index[j] = sc.nextInt();
+            
+        }
+        
+        int b= 0;
+        for(int a= 0; a <ub.length; a++){
+            int n =1; 
+            for (int x = a+1; x< index.length; x++){
+            n = n*ub[x];
+            }
+           
+            n = n*index[a];
+            b = b+n;
+        }
+        
+        double address = add + (b * esize);
+        
+        System.out.println("MEMORY ADDRESS: " + address);
+        
+        System.out.println("Done.");
+        }   
+        
+    }
+    
+
