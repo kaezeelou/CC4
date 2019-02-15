@@ -1,0 +1,108 @@
+
+package records;
+
+import java.util.Scanner;
+
+public class Records {
+    
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String name;
+        int length;
+        String type;
+        System.out.print("Enter database Dimension : ");
+        int dim = sc.nextInt();
+        double temp = 1;
+        int ub[] = new int[dim];
+        
+        
+        int r = 0;
+        for (int i = 0; i <ub.length ; i ++){
+            System.out.print("Upper Bound " + (i + 1)+ " : ");
+            ub[i] = sc.nextInt();
+            r = r +ub[i];
+            
+        }    
+        
+        System.out.println(" ");
+        System.out.print("Number of fields in each record: ");
+        int rec = sc.nextInt();
+        int esize= 0;
+        String fname[] = new String[rec];
+        int fsize[] = new int[rec];
+            for (int i = 0; i<rec ; i++){
+                System.out.print("FIELD "+ (i+1) +" NAME: " );
+                fname[i] = sc.next();
+                System.out.print("FIELD "+ (i+1) +" LENGTH: ");
+                length = sc.nextInt();
+                System.out.print("FIELD "+ (i+1) +" DATATYPE: ");
+                type = sc.next();
+                System.out.println("");
+                
+                
+                
+                if (type.equals("int")){
+                    fsize[i] = (length * 2);
+                }else if (type.equals("char")){
+                    fsize[i] = (length * 1);
+                }else if (type.equals("double")){
+                    fsize[i] = (length * 8);
+            }  
+                esize = esize + fsize[i];
+                System.out.println("Data Field " + fname[i] + " is " + fsize[i] + " bytes in size");
+                System.out.println(" ");
+            }
+            
+            
+                
+        
+        System.out.print("Enter Starting address: ");
+        int address = sc.nextInt();
+        
+        System.out.println("EEsize per record: " + esize);
+      
+        System.out.println("Your database can hold " + r + " records");
+        int con = esize * r;
+        System.out.println("Your database consumes " + con + " bytes of memory space") ;
+        
+        System.out.println("");
+        System.out.println("SEARCH FOR THE ADDRESS OF A FIELD IN A SPECIFIC RECORD FROM THE DATABASE");
+        
+        
+        int in[] = new int [dim];
+        for (int b = 0; b <in.length;b++){
+            System.out.print("Input record search index at dimension  "+ (b + 1)+" : ");
+             in[b] = sc.nextInt();
+        }
+        System.out.print("Input field name to search in the record: " );
+        String rf = sc.next();
+        
+        int kz = 0;
+        for (int k = 0; k<fsize.length; k++){
+            String lou = fname[k];
+            
+            if (lou.equalsIgnoreCase(rf)){
+                kz = k;
+            }
+        }
+        int index[] = new int [dim];
+        
+        int lou = fsize[kz];
+        
+        int b= 0;
+        for(int a= 0; a <ub.length; a++){
+            int n =1; 
+            for (int x = a+1; x< in.length; x++){
+            n = n*ub[x];
+            }
+            n = n*in[a];
+            b = b+n;
+        }
+        
+        double add = address + (b * (esize ));
+        System.out.println("The address of this record's " + rf + " is located at : " + (add - lou));
+}
+    
+}
+
