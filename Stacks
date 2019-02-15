@@ -1,8 +1,10 @@
 
+
 package stacks;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class Stacks {
 
   
@@ -31,10 +33,12 @@ public class Stacks {
                 top++;
                 System.out.println("STACK:" + list.toString());
                 System.out.println("TOP: " + top);
-                }else 
+                }else {
                 System.out.println("Sorry, the Stack is Full");
+                 System.out.println("STACK" + list.toString());
+                System.out.println("TOP: " +top);
                 
-                
+                }
         }else if (choice == 2){
                 if(top >=0){
                 System.out.println("Push a number: ");
@@ -42,10 +46,12 @@ public class Stacks {
                 top--;
                 System.out.println("STACK" + list.toString());
                 System.out.println("TOP: " +top);
-                }else 
+                }else {
                 System.out.println("Sorry, the Stack is Empty");
+                System.out.println("STACK" + list.toString());
+                System.out.println("TOP: " +top);
                 
-                
+                }
         }else if(choice == 3){ 
             System.exit(0);
     }
