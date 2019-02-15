@@ -1,0 +1,64 @@
+
+package queues;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+public class Queues {
+
+   
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        ArrayList list = new ArrayList();
+        
+        System.out.println("Enter Queue size: ");
+        int stack = sc.nextInt(); 
+        int top = -1;
+        int front = 0;
+        for (int i = 0;; i++) {
+        System.out.println("Options:"
+                + "\n[1]INSERT"
+                + "\n[2]DELETE"
+                + "\n[3]EXIT");
+        
+        int choice = sc.nextInt();
+        
+        if(choice == 1){
+                
+                if(top != stack-1){
+                System.out.println("Insert a number: ");
+                list.add(sc.nextInt());
+                top++;
+                System.out.println("QUEUE:" + list.toString());
+                System.out.println("REAR: " + top);
+                }else {
+                System.out.println("Sorry, the Queue is Full");
+                System.out.println("QUEUE" + list.toString());
+                System.out.println("REAR: " + top);
+               } 
+        }else if (choice == 2){
+                 
+                if(top >= 0)           
+                {list.remove(front);
+                top--;
+                System.out.println("QUEUE" + list.toString());
+                
+                System.out.println("REAR: " + top);
+                
+                
+                }else {
+                System.out.println("Sorry, the Queue is Empty");
+                System.out.println("QUEUE" + list.toString());
+                System.out.println("REAR: " + top);
+                
+                } 
+                
+        }else if(choice == 3){ 
+            System.exit(0);
+    }
+  }
+    }
+    
+}
