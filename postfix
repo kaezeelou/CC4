@@ -1,0 +1,105 @@
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class InfixToPostfix {
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in); 
+        System.out.println("Enter infix, put # after the expression: ");
+        String infix = sc.next();
+        
+        
+        System.out.printf("%-8s%-10s%-15s\n", "Input","Stack","Postfix");
+        
+        String postfix = "";  
+        Stack<Character> s = new Stack<>();  
+        s.push('#');  
+ 
+        System.out.printf("%-8s%-10s%-15s\n", "",(s.toString()),postfix);  
+        
+        String stack ="";
+        for (int i = 0; i < infix.length(); i++) {
+         char input = infix.charAt(i);
+         
+         if(Character.isLetterOrDigit(input)){
+             postfix += input;            
+
+             
+         }else if (input == '('){
+             s.push(input);
+         }else if (input == ')'){
+             while(s.peek() != '(') {
+             postfix += s.pop();
+             
+         }
+             s.pop();
+         }else {
+             while (s.isEmpty() && ISP(s.peek()) >= ICP(input)){
+             postfix += s.pop();
+         
+        } 
+        s.push(input);
+        }
+        if (input == '#' && s.size() > 0){
+            while(s.lastElement() != '#'){
+                postfix += s.pop();
+            
+            }
+        
+        }
+        
+       
+        stack = "";
+        for (int j = 0; j < s.size(); j++) {
+            stack += s.get(j);
+        }   
+        
+        if( i == infix.length() -  1 ){
+            postfix= postfix.substring(0, postfix.length() -1);
+         
+              
+        }
+            System.out.println(s + "\t" + stack +"\t" + postfix  + "");
+            i++;
+        }
+        }
+     
+        
+        
+        public static int ISP (char isp){
+            int num =0;
+            if (isp == '^'){
+                num =3;
+        }else if (isp == '*'|| isp == '/' || isp == '%') { 
+                num = 2;
+        }else if (isp == '+' || isp == '-') {
+                num = 1;
+        }else if (isp == '('){
+                num =0;     
+        }
+            return isp;
+        }
+        
+        
+        public static int ICP (char icp){
+            int num=0;
+            if (icp == '^' || icp == '('){
+                num = 4;
+            }else if (icp == '*'|| icp == '/' || icp == '%'){ 
+                num = 2;  
+            }else if (icp == '+'|| icp == '-'){
+                num = 1;
+        }
+            return icp;
+        }
+       
+       
+        
+ }
+        
+    
+
+    
+    
+
