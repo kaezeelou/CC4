@@ -1,53 +1,114 @@
+import java.util.*;
 
-import java.util.Scanner;
-import java.util.Stack;
-
-public class LabAct7 {
-    
-    public static void main(String[] args) {
+public class InfixToPostfix {
+    public static void main(String[] args){
+        
         Scanner sc = new Scanner(System.in);
+        
+        ArrayList token = new ArrayList();
+        ArrayList postfix = new ArrayList();
+        Stack stack = new Stack();
+        
+        String input;
+        int x , y;
+        
         System.out.println("Enter infix, put # after the expression: ");
-        String infix = sc.next();
+        input = sc.nextLine();
         
+        System.out.println("Token \t\t Stack \t\t\t\t Output");
+        for(int i = 0 ; i < input.length() ; i++){
+            
+            try{
+                token.add(Integer.parseInt(Character.toString(input.charAt(i))));
+            }catch(Exception e){
+                token.add(Character.toString(input.charAt(i)));
+            }
+        }
+        stack.add(token.get(token.size()-1));
         
-        
-    }  
-    public String infixToPostFix(String infix){
-        
-        Stack<Character> s = new Stack<>();
-        s.push('#');
+        for(x = 0 ; x < token.size() ; x++){
+            
+            if(token.get(x) instanceof Integer){
+                postfix.add(token.get(x));
+            }
+            else if(token.get(x).equals(")")){
+                
+                y = stack.size()-1;
+                 while(y > 0 && !(stack.get(y).equals("("))){
+                    postfix.add(stack.get(y));
+                    stack.pop();
+                    y--;
+                }
+                stack.pop();
+            }
+            else if(token.get(x) instanceof String && !(token.get(x).equals("#"))){
+                while(isp(stack.get(stack.size()-1)) >= icp(token.get(x))){
+                    
+                    postfix.add(stack.get(stack.size()-1));
+                    stack.remove(stack.size()-1);
+                }
+                 stack.add(token.get(x));
+            }
+            if(token.get(x).equals("#") && stack.size() > 0){
+                
+                for(y = stack.size()-1 ; y > 0 ; y--){
+                    postfix.add(stack.get(y));
+                    stack.pop();
+                }
+            }
+            System.out.print(token.get(x) + " \t\t ");
+            
+            for(int i = 0 ; i < stack.size() ; i++){
+                System.out.print(stack.get(i));
+            }
+            System.out.print(" \t\t\t\t ");
+            
+            
+            for(int i = 0 ; i < postfix.size() ; i++){
+                System.out.print(postfix.get(i));
+            }
+            System.out.println("");
+        }
     }
     
+   
+   
+    public static int isp(Object token){
         
+        int value = -3;
+                
+        if(token.equals(")")){
+            value = -1;
+        }else if(token.equals("^")){
+            value = 3;
+        }else if(token.equals("*") || token.equals("/") || token.equals("%")){
+            value = 2;
+        }else if(token.equals("+") || token.equals("-")){
+            value = 1;
+        }else if(token.equals("(")){
+            value = 0;
+        }
         
-        public static int ISP (char isp){
-            int num =0;
-            if (isp == '^'){
-                num =3;
-        }else if (isp == '*'|| isp == '/' || isp == '%') { 
-                num = 2;
-        }else if (isp == '+' || isp == '-') {
-                num = 1;
-        }else if (isp == '('){
-                num =0;     
-        }
-            return 0;
-        }
-        
-        
-        public static int ICP (char icp){
-            int num=0;
-            if (icp == '^' || icp == '('){
-                num = 4;
-            }else if (icp == '*'|| icp == '/' || icp == '%'){ 
-                num = 2;  
-            }else if (icp == '+'|| icp == '-'){
-                num = 1;
-        }
-            return 0;
-        }
+        return value;
     }
-
     
-    
-
+    public static int icp(Object token){
+        
+        int value = -2;
+        
+        
+        if(token.equals(")")){
+            value = -1;
+        }else if(token.equals("^")){
+            value = 4;
+        }else if(token.equals("*") || token.equals("/") || token.equals("%")){
+            value = 2;
+        }else if(token.equals("+") || token.equals("-")){
+            value = 1;
+        }else if(token.equals("(")){
+            value = 4;
+        }
+        
+        return value;
+    }
+}
