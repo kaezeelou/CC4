@@ -1,0 +1,241 @@
+package binarysearchtree;
+import java.util.Scanner;
+
+public class BinarySearchTree {
+	static int numb;
+
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter array size: ");
+		int arraySize = input.nextInt();
+		int[] array = new int[arraySize];
+		for (int i = 0; i < arraySize; i++) {
+			System.out.print("Enter element at index " + i + ": ");
+			array[i] = input.nextInt();
+		}
+		int[] tree = new int[300];
+		tree[0] = array[0];
+		boolean bool = true;
+		for (int i = 1; i < arraySize; i++) {
+			int j = 0;
+			bool = true;
+			while (bool) {
+				if (array[i] < tree[j]) {
+					if (tree[j * 2 + 1] != 0) {
+						j = j * 2 + 1;
+					} else {
+						tree[j * 2 + 1] = array[i];
+						bool = false;
+					}
+				} else if (array[i] > tree[j]) {
+					if (tree[j * 2 + 2] != 0) {
+						j = j * 2 + 2;
+					} else {
+						tree[j * 2 + 2] = array[i];
+						bool = false;
+					}
+				}
+			}
+		}
+		displayTree(tree);
+
+		boolean check = true;
+		while (check) {
+			System.out.print("[1]Insert\n"
+                                       + "[2]Delete\n"
+                                       + "[3]Quit : ");
+			int opt = input.nextInt();
+			switch (opt) {
+			case 1:
+				addElement(tree);
+				displayTree(tree);
+				break;
+			case 2:
+				System.out.print("Enter number: ");
+				int delete = input.nextInt();
+				boolean bool2 = true;
+				int start = 0, i = 0;
+				while (bool2) {
+					if (tree[i] == delete) {
+						start = i;
+						bool2 = false;
+					}
+					i++;
+				}
+				if (tree[start * 2 + 2] != 0 && tree[start * 2 + 1] == 0 && tree[(start * 2 + 2) * 2 + 1] == 0
+						&& tree[(start * 2 + 2) * 2 + 2] == 0) {
+					tree[start] = tree[start * 2 + 2];
+					tree[start * 2 + 2] = 0;
+				} else {
+					deleteElement(tree, start);
+				}
+				displayTree(tree);
+				break;
+			case 3:
+				System.exit(0);
+			}
+		}
+	}
+
+	public static void displayTree(int[] tree) {
+		int m = tree.length;
+		boolean boo = true;
+		while (boo) {
+			m--;
+			if (tree[m] != 0) {
+				boo = false;
+			}
+		}
+		System.out.print("Binary search tree: \n");
+		for (int i = 0; i < m + 1; i++) {
+				System.out.print(tree[i] + "[" + i + "]" + "\n");
+			
+		}
+	}
+
+	public static int[] addElement(int[] tree) {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter number: ");
+		int add = input.nextInt();
+		int j = 0;
+		boolean check1 = true;
+		while (check1) {
+			if (add < tree[j]) {
+				if (tree[j * 2 + 1] != 0) {
+					j = j * 2 + 1;
+				} else {
+					tree[j * 2 + 1] = add;
+					check1 = false;
+				}
+			} else if (add > tree[j]) {
+				if (tree[j * 2 + 2] != 0) {
+					j = j * 2 + 2;
+				} else {
+					tree[j * 2 + 2] = add;
+					check1 = false;
+				}
+			}
+		}
+		return tree;
+	}
+
+	public static int[] copyFromArray(int[] tree, int index, int[] arr) {
+		numb++;
+		if (tree[index * 2 + 1] == 0 && tree[index * 2 + 2] == 0) {
+
+		} else if (tree[index * 2 + 1] != 0 && tree[index * 2 + 2] == 0) {
+			arr[numb] = tree[index * 2 + 1];
+			copyFromArray(tree, index * 2 + 1, arr);
+		} else if (tree[index * 2 + 1] == 0 && tree[index * 2 + 2] != 0) {
+			arr[numb] = tree[index * 2 + 2];
+			copyFromArray(tree, index * 2 + 2, arr);
+		} else if (tree[index * 2 + 1] != 0 && tree[index * 2 + 2] != 0) {
+			arr[numb] = tree[index * 2 + 1];
+			numb++;
+			arr[numb] = tree[index * 2 + 2];
+			copyFromArray(tree, index * 2 + 1, arr);
+			copyFromArray(tree, index * 2 + 2, arr);
+		}
+		return arr;
+	}
+
+	public static int[] deleteElement(int[] tree, int start) {
+
+		int smallest = 0, count = 0;
+		int small[] = new int[tree.length];
+		// for double-leaf node
+		if (tree[start * 2 + 1] != 0 && tree[start * 2 + 2] != 0) {
+			small[0] = tree[start * 2 + 2];
+			copyFromArray(tree, start * 2 + 2, small);
+			int minX = Integer.MAX_VALUE;
+			for (int i = 0; i < small.length; i++) {
+				if (small[i] != 0 && small[i] < minX)
+					minX = small[i];
+			}
+			smallest = minX;
+			boolean bool5 = true;
+			int start2 = 0, i = 0;
+			while (bool5) {
+				if (tree[i] == smallest) {
+					start2 = i;
+					bool5 = false;
+				}
+				i++;
+			}
+			tree[start] = tree[start2];
+			tree[start2] = 0;
+		} else {
+			tree[start] = 0;
+		}
+		int start2 = start;
+		int start3 = start;
+
+		// determine the length of array
+		boolean bool2 = true;
+		while (bool2) {
+			start++;
+			if (tree[start] != 0) {
+				count++;
+			}
+			if (start == tree.length - 1) {
+				bool2 = false;
+			}
+		}
+		int[] arr = new int[count];
+		int count2 = 0;
+
+		// fill up the array with tree elements
+		boolean bool3 = true;
+		while (bool3) {
+			start2++;
+			if (tree[start2] != 0) {
+				arr[count2] = tree[start2];
+				count2++;
+			}
+			if (start2 == tree.length - 1) {
+				bool3 = false;
+			}
+		}
+
+		// fill the rest of the tree with 0s
+		for (int z = start3 + 1; z < tree.length; z++) {
+			tree[z] = 0;
+		}
+
+		boolean flag = true;
+		for (int i = 0; i < tree.length; i++) {
+			if (tree[i] != 0) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			tree[0] = arr[0];
+			arr[0] = 0;
+		}
+
+		// arrange the binary
+		boolean bool4 = true;
+		for (int k = 0; k < arr.length; k++) {
+			int j = 0;
+			bool4 = true;
+			while (bool4) {
+				if (arr[k] < tree[j]) {
+					if (tree[j * 2 + 1] != 0) {
+						j = j * 2 + 1;
+					} else {
+						tree[j * 2 + 1] = arr[k];
+						bool4 = false;
+					}
+				} else if (arr[k] > tree[j]) {
+					if (tree[j * 2 + 2] != 0) {
+						j = j * 2 + 2;
+					} else {
+						tree[j * 2 + 2] = arr[k];
+						bool4 = false;
+					}
+				}
+			}
+		}
+		return tree;
+	}
+}
