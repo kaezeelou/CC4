@@ -1,0 +1,296 @@
+package binarysearchtree;
+
+import java.util.*;
+
+public class Binary {
+
+    static List<String> BST = new ArrayList<>();//
+    static List<String> Del = new ArrayList<>();
+
+    static int lvl, nodePosition;
+    static Integer root;
+
+    public static void main(String[] args) {
+
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("Enter Array Size : ");
+        int s = scan.nextInt();
+
+        int[] input = new int[s];
+
+        for (int i = 0; i < s; i++) {
+        System.out.print("Enter Array Element[" + (i) +"]: ");
+        input[i] = scan.nextInt();
+
+        }
+
+        System.out.print("\n The inputs are: ");
+
+        for (int i = 0; i < s; i++) {
+            System.out.print(input[i] + "  ");
+        }
+
+        lvl = 0;
+        String element;
+        for (int i = 0; i < s; i++) {
+            element = String.valueOf(input[i]);
+            insert(element, input[i]);
+        }
+
+        System.out.print("\nThis is the array: \n");
+        for (int i = 0; i < BST.size(); i++) {
+            System.out.println(BST.get(i) +"[" + i + "]");
+        }
+
+        String option = "";
+        do {
+            System.out.println(""
+//                    + "\n[0]Search"
+                    + "\n[1]Insert"
+                    + "\n[2]Delete"
+                    + "\n[3]Display"
+                    + "\n[4]Exit"
+                    + "\n\nEnter your choice: ");
+            option = scan.next();
+            switch (option) {
+
+                case "0"://Search
+                    System.out.print("\nEnter a number to be SEARCH: ");
+                    String in = scan.next();
+
+                    boolean exist = false;
+
+                    for (int i = 0; i < BST.size(); i++) {
+                        if (in.equals(BST.get(i))) {
+
+                            exist = true;
+                            System.out.println("The value is already existed." + "\nLocation: Index[" + i + "]");
+
+                        }
+                    }
+                    if (exist == false) {
+                        System.out.println("\nThe value does not exist.");
+                    }
+
+                    break;
+
+                case "1"://Insert
+                    System.out.println("Enter a number to be inserted: ");
+                    int insertVal = scan.nextInt();
+
+                    String elem = String.valueOf(insertVal);
+                    boolean e = valueExist(elem);
+                    
+
+                    if (e == false) {
+                        insert(elem, insertVal);
+
+                    } else {
+                        System.out.println("\nInvalid Insertion: The value is already existed!");
+                    }
+                    
+                    System.out.print("\nThis is the array: \n");
+                    for (int i = 0; i < BST.size(); i++) {
+                        System.out.println("[" +i+"] " +BST.get(i) );
+                    }
+                    break;
+
+                case "2"://Delete
+
+                    System.out.println("Enter a number to be deleted: ");
+                    String delVal = scan.next();
+                    int IndexDelVal = 0;
+
+                    for (int a = 0; a < BST.size(); a++) {
+                        if (delVal.equals(BST.get(a))) {
+                            IndexDelVal = a;
+                        }
+                    }
+
+                    boolean cr = checkRnode(IndexDelVal);
+                    boolean cl = checkLnode(IndexDelVal);
+
+                    if (cr == false && cl == false) {//case 1
+                        BST.set(IndexDelVal, null);
+                    } else if (cr == true) {//case 2
+                        int currentNode = IndexDelVal;
+                        int nextNode = (2 * currentNode) + 2;
+
+                        boolean checkL = checkLnode(nextNode);
+                        boolean checkR = checkRnode(nextNode);
+
+                        if (checkL == true) {//case 2a
+
+                            while (checkLnode(nextNode) == true) {//Getting the leftmost node(index) of the rNode of the Value to be deleted
+                                currentNode = (2 * nextNode) + 1;
+                                nextNode = currentNode;
+                            }
+                            BST.set(IndexDelVal, BST.get(nextNode));
+                            BST.set(nextNode, null);
+
+                        } else if (checkL == false && checkR == true) {//case2b
+//                            BST.set(currentNode, null);
+                            String b = BST.get(IndexDelVal);
+                            for (int j = 0; j < BST.size(); j++) {
+                                String a = BST.get(j);
+                                if (a != null && a != b) {
+                                    Del.add(a);
+                                }
+                            }
+                            BST.clear();
+
+                            for (int p = 0; p < Del.size(); p++) {
+
+                                insert(Del.get(p), Integer.parseInt(Del.get(p)));
+                            }
+
+                        }
+                    } else if (cr == false && cl == true) {
+//                    BST.set(IndexDelVal, null);
+                        String b = BST.get(IndexDelVal);
+
+                        for (int j = 0; j < BST.size(); j++) {
+                            String a = BST.get(j);
+                            if (a != null && a != b) {
+                                Del.add(a);
+                            }
+                        }
+                        BST.clear();
+
+                        for (int p = 0; p < Del.size(); p++) {
+
+                            insert(Del.get(p), Integer.parseInt(Del.get(p)));
+                        }
+
+                    }
+                    System.out.print("\nThis is the array: \n");
+                    for (int i = 0; i < BST.size(); i++) {
+                        System.out.println("[" +i+"] " +BST.get(i) );
+                    }
+
+                    break;
+
+                case "3"://Display 
+                    System.out.print("\nThis is the array: \n");
+                    for (int i = 0; i < BST.size(); i++) {
+                        System.out.println("[" +i+"] " +BST.get(i) );
+                    }
+                    break;
+
+                case "4":
+                    System.exit(0);
+ 
+            }
+
+        } while (!option.equals("4"));
+    }
+
+    static void insert(String element, int input) {
+
+        nodePosition = 0;
+
+        if (BST.isEmpty()) {
+
+            BST.add(element);
+        } else {
+
+            while (true) {
+
+                if (input <= Integer.parseInt(BST.get(nodePosition))) {//leftNode
+
+                    nodePosition = newNode(nodePosition, 1);
+                    if (nodePosition >= BST.size()) {
+                        lvl++;
+                        treeHeight(lvl);
+                    }
+                    if (BST.get(nodePosition) == null) {
+                        BST.set(nodePosition, element);
+                        break;
+                    }
+                } else {                                                  //rightNode
+                    nodePosition = newNode(nodePosition, 2);
+                    if (nodePosition >= BST.size()) {
+                        lvl++;
+                        treeHeight(lvl);
+                    }
+                    if (BST.get(nodePosition) == null) {
+                        BST.set(nodePosition, element);
+                        break;
+
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+    static boolean valueExist(String in) {
+        boolean confirm = false;
+        for (int i = 0; i < BST.size(); i++) {
+            if (in.equals(BST.get(i))) {
+                confirm = true;
+            }
+        }
+
+        return confirm;
+
+    }
+
+    static void treeHeight(int level) {
+        int l = (int) Math.pow(2, level);
+        for (int i = 1; i <= l; i++) {
+            BST.add(null);
+        }
+    }
+
+    static int newNode(int node, int leftOrRight) {
+
+        int pNode = (node * 2) + leftOrRight;
+        return pNode;
+
+    }
+
+    static int lNode(int nodeIndex) {
+        int lNode = 0;
+        int i = nodeIndex;
+        while (lNode < BST.size() || BST.get(i) != null) {
+            lNode = (i * 2) + 1;
+
+            i++;
+        }
+        return lNode;
+    }
+
+    static int rNode(int nodeIndex) {
+        int rNode = 0;
+        int i = nodeIndex;
+        while (rNode < BST.size() || BST.get(rNode) != null) {
+            rNode = (i * 2) + 2;
+
+            i++;
+        }
+        return rNode;
+    }
+
+    static boolean checkRnode(int i) {
+        boolean check = true;
+        int r = (2 * i) + 2;
+        if (r >= BST.size() || BST.get(r) == null) {
+            check = false;
+        }
+        return check;
+    }
+
+    static boolean checkLnode(int i) {
+        boolean check = true;
+        int r = (2 * i) + 1;
+        if (r >= BST.size() || BST.get(r) == null) {
+            check = false;
+        }
+        return check;
+    }
+
+}
